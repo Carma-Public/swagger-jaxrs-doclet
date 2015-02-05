@@ -1,0 +1,18 @@
+{
+    "apiVersion": "0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://localhost:8080",
+    "resourcePath": "/root",
+    "apis": [
+        {
+            "path": "/message",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "getMessage",
+                    "type": "string"
+                }
+            ]
+        }
+    ]
+}

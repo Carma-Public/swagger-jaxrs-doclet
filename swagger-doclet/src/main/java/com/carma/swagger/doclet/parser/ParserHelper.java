@@ -35,7 +35,12 @@ import com.sun.javadoc.TypeVariable;
  */
 public class ParserHelper {
 
-	private static final String JAX_RS_PATH_PARAM = "javax.ws.rs.PathParam";
+    /**
+     * Tracks resources mapped to root as they need to be handled as a special case in a few places
+     */
+    public static final String ROOT_PATH = "/";
+
+    private static final String JAX_RS_PATH_PARAM = "javax.ws.rs.PathParam";
 	private static final String JAX_RS_QUERY_PARAM = "javax.ws.rs.QueryParam";
 	private static final String JAX_RS_HEADER_PARAM = "javax.ws.rs.HeaderParam";
 	private static final String JAX_RS_FORM_PARAM = "javax.ws.rs.FormParam";
@@ -104,7 +109,7 @@ public class ParserHelper {
 		return null;
 	}
 
-	/**
+    /**
 	 * This gets the allowable values from an enum class doc or null if the classdoc does not
 	 * represent an enum
 	 * @param typeClassDoc the class doc of the enum class to get the allowable values of
@@ -165,7 +170,7 @@ public class ParserHelper {
 		AnnotationParser p = new AnnotationParser(doc, options);
 		String path = p.getAnnotationValue(JAX_RS_PATH, "value");
 		if (path != null) {
-			if (path.endsWith("/")) {
+			if (!ROOT_PATH.equals(path) && path.endsWith("/")) {
 				path = path.substring(0, path.length() - 1);
 			}
 			if (!path.isEmpty() && !path.startsWith("/")) {
