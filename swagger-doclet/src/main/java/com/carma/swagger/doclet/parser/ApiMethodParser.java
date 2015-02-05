@@ -1,6 +1,7 @@
 package com.carma.swagger.doclet.parser;
 
 import static com.carma.swagger.doclet.parser.ParserHelper.parsePath;
+import static com.carma.swagger.doclet.parser.ParserHelper.ROOT_PATH;
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.collect.Collections2.filter;
 
@@ -169,7 +170,7 @@ public class ApiMethodParser {
 			return null;
 		}
 
-		String path = this.parentPath + methodPath;
+        String path = (ROOT_PATH.equals(this.parentPath) ? "" : this.parentPath) + methodPath;
 
 		// build params
 		List<ApiParameter> parameters = this.generateParameters();

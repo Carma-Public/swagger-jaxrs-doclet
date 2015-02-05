@@ -1,6 +1,7 @@
 package com.carma.swagger.doclet.parser;
 
 import static com.carma.swagger.doclet.parser.ParserHelper.parsePath;
+import static com.carma.swagger.doclet.parser.ParserHelper.ROOT_PATH;
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.collect.Maps.uniqueIndex;
 
@@ -196,7 +197,11 @@ public class CrossClassApiParser {
 
 	private String buildResourcePath(String classResourcePath, MethodDoc method) {
 		String resourcePath = getRootPath();
-		if (classResourcePath != null) {
+        // resources mapped to "/" need a default resourcePath to show up - can be overriden with @resourcePath
+        if (ROOT_PATH.equals(resourcePath)) {
+            resourcePath = "/root";
+        }
+        if (classResourcePath != null) {
 			resourcePath = classResourcePath;
 		}
 
