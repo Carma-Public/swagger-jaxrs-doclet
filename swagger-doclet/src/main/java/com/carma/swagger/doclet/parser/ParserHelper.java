@@ -174,10 +174,20 @@ public class ParserHelper {
 			if (!path.isEmpty() && !path.startsWith("/")) {
 				path = "/" + path;
 			}
-
-			return path;
 		}
-		return null;
+		List<String> resourceTags = options.getResourceTags();
+        if (resourceTags != null) {
+            for (String resourceTag : resourceTags) {
+                Tag[] tags = doc.tags(resourceTag);
+                if (tags != null && tags.length > 0) {
+                    path = tags[0].text();
+                    path = path.toLowerCase();
+                    path = path.trim().replace(" ", "_");
+                    break;
+                }
+            }
+        }
+		return path;
 	}
 
 	/**

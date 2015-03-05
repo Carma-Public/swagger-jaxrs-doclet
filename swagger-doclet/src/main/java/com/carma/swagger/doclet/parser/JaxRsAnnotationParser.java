@@ -7,13 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -22,15 +26,12 @@ import com.carma.swagger.doclet.Recorder;
 import com.carma.swagger.doclet.ServiceDoclet;
 import com.carma.swagger.doclet.model.Api;
 import com.carma.swagger.doclet.model.ApiDeclaration;
-import com.carma.swagger.doclet.model.HttpMethod;
 import com.carma.swagger.doclet.model.ResourceListing;
 import com.carma.swagger.doclet.model.ResourceListingAPI;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
 import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Type;
 
 @SuppressWarnings("javadoc")
 public class JaxRsAnnotationParser {
@@ -67,7 +68,8 @@ public class JaxRsAnnotationParser {
 			typeClasses.add(this.rootDoc.classNamed("java.util.List"));
 
 			// filter the classes to process
-			Collection<ClassDoc> docletClasses = new ArrayList<ClassDoc>();
+			Map<ClassDoc, String> docletClasses = new LinkedHashMap<ClassDoc,String>(this.rootDoc.classes().length);
+			Queue<CrossClassApiParser> parsers = new LinkedList<CrossClassApiParser>();
 			for (ClassDoc classDoc : this.rootDoc.classes()) {
 
 				// see if deprecated
@@ -95,48 +97,33 @@ public class JaxRsAnnotationParser {
 					continue;
 				}
 
-				docletClasses.add(classDoc);
-			}
-
-			List<ApiDeclaration> declarations = null;
-
-			// build up set of subresources
-			// do simple parsing to find sub resource classes
-			// these are ones referenced in the return types of methods
-			// which have a path but no http method
-			Map<Type, ClassDoc> subResourceClasses = new HashMap<Type, ClassDoc>();
-			for (ClassDoc classDoc : docletClasses) {
-				ClassDoc currentClassDoc = classDoc;
-				while (currentClassDoc != null) {
-
-					for (MethodDoc method : currentClassDoc.methods()) {
-						if (ParserHelper.parsePath(method, this.options) != null && HttpMethod.fromMethod(method) == null) {
-							ClassDoc subResourceClassDoc = ParserHelper.lookUpClassDoc(method.returnType(), docletClasses);
-							if (subResourceClassDoc != null) {
-								subResourceClasses.put(method.returnType(), subResourceClassDoc);
-							}
-						}
-					}
-
-					currentClassDoc = currentClassDoc.superclass();
-
-					// ignore parent object class
-					if (!ParserHelper.hasAncestor(currentClassDoc)) {
-						break;
-					}
+				CrossClassApiParser classParser = new CrossClassApiParser(this.options, classDoc, Arrays.asList(this.rootDoc.classes()), parsers, typeClasses,
+						SWAGGER_VERSION, this.options.getApiVersion(), this.options.getApiBasePath());
+				String rootPath = classParser.getRootPath();
+				// omit if its not a resource
+				if (rootPath != null) {
+				    parsers.add(classParser);
 				}
 			}
 
 			// parse with the v2 parser that supports endpoints of the same resource being spread across resource files
 			Map<String, ApiDeclaration> resourceToDeclaration = new HashMap<String, ApiDeclaration>();
-			for (ClassDoc classDoc : docletClasses) {
-				CrossClassApiParser classParser = new CrossClassApiParser(this.options, classDoc, docletClasses, subResourceClasses, typeClasses,
-						SWAGGER_VERSION, this.options.getApiVersion(), this.options.getApiBasePath());
-				classParser.parse(resourceToDeclaration);
+			for (CrossClassApiParser parser = parsers.poll(); parser != null; parser = parsers.poll()) {
+			    ClassDoc classDoc = parser.getClassDoc();
+			    String previousPath = docletClasses.get(classDoc);
+			    if (previousPath == null) {
+			        parser.parse(resourceToDeclaration);
+                    String rootPath = parser.getRootPath();
+                    docletClasses.put(classDoc, rootPath);
+			    } else {
+			        continue;
+			        // TODO 2.0 rootPath $ref previousPath
+			        // Prefers the shallowest path (least amount of sub resources to go through)
+			    }
 			}
 			Collection<ApiDeclaration> declarationColl = resourceToDeclaration.values();
 
-			declarations = new ArrayList<ApiDeclaration>(declarationColl);
+			List<ApiDeclaration> declarations = new ArrayList<ApiDeclaration>(declarationColl);
 
 			// clear any empty models
 			for (ApiDeclaration api : declarations) {
