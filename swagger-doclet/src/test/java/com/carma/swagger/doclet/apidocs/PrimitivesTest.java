@@ -37,7 +37,7 @@ public class PrimitivesTest {
 		final RootDoc rootDoc = RootDocLoader.fromPath("src/test/resources", "fixtures.primitives");
 		new JaxRsAnnotationParser(this.options, rootDoc).run();
 
-		List<String> primitives = Arrays.asList("boolean", "byte", "short", "int", "long", "float", "double", "string", "date");
+		List<String> primitives = Arrays.asList("boolean", "byte", "short", "int", "long", "float", "double", "string", "date", "bigdecimal");
 		for (String primitive : primitives) {
 			final ApiDeclaration api = loadFixture("/fixtures/primitives/" + primitive + "s.json", ApiDeclaration.class);
 			verify(this.recorderMock).record(any(File.class), eq(api));

@@ -1,0 +1,32 @@
+{
+    "apiVersion": "0",
+    "swaggerVersion": "1.2",
+    "basePath": "http://localhost:8080",
+    "resourcePath": "/primitives/bigdecimals",
+    "apis": [
+        {
+            "path": "/primitives/bigdecimals",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "get",
+                    "type": "number"
+                },
+                {
+                    "method": "POST",
+                    "nickname": "create",
+                    "type": "Response",
+                    "parameters": [
+                        {
+                            "paramType": "body",
+                            "name": "value",
+                            "type": "number",
+                            "format": "double",
+                            "required" : true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
