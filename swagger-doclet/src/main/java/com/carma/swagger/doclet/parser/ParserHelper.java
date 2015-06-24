@@ -325,6 +325,8 @@ public class ParserHelper {
 			return new String[] { "number", "float" };
 		} else if (javaType.toLowerCase().equals("double") || javaType.equalsIgnoreCase("java.lang.Double")) {
 			return new String[] { "number", "double" };
+		} else if (javaType.equals("java.math.BigDecimal")) {
+			return new String[] { "number", "double" };
 		} else if (javaType.toLowerCase().equals("string") || javaType.equalsIgnoreCase("java.lang.String")) {
 			return new String[] { "string", null };
 		} else if (javaType.toLowerCase().equals("char") || javaType.equalsIgnoreCase("java.lang.Character")) {
