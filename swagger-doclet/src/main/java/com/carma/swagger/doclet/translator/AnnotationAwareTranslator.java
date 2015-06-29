@@ -111,7 +111,7 @@ public class AnnotationAwareTranslator implements Translator {
 			boolean isFileDataType = ParserHelper.isFileParameterDataType(parameter, this.options);
 			if (isFileDataType) {
 				OptionalName res = presentOrMissing("File");
-				this.typeNameCache.put(cacheKey, res);
+				//this.typeNameCache.put(cacheKey, res);
 				return res;
 			}
 		}
@@ -142,7 +142,7 @@ public class AnnotationAwareTranslator implements Translator {
 		} else {
 			name = nameFor(this.rootElement, this.rootElementProperty, type.getType().asClassDoc(), false);
 		}
-		this.typeNameCache.put(type, name);
+		//this.typeNameCache.put(type, name);
 		return name;
 	}
 
