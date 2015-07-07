@@ -49,50 +49,24 @@ public class QualifiedType {
 		return this.type;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		QualifiedType that = (QualifiedType) o;
+
+		if (qualifier != null ? !qualifier.equals(that.qualifier) : that.qualifier != null) return false;
+		if (type != null ? !type.equals(that.type) : that.type != null) return false;
+		return !(typeName != null ? !typeName.equals(that.typeName) : that.typeName != null);
+
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.qualifier == null) ? 0 : this.qualifier.hashCode());
-		result = prime * result + ((this.typeName == null) ? 0 : this.typeName.hashCode());
+		int result = qualifier != null ? qualifier.hashCode() : 0;
+		result = 31 * result + (type != null ? type.hashCode() : 0);
+		result = 31 * result + (typeName != null ? typeName.hashCode() : 0);
 		return result;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		QualifiedType other = (QualifiedType) obj;
-		if (this.qualifier == null) {
-			if (other.qualifier != null) {
-				return false;
-			}
-		} else if (!this.qualifier.equals(other.qualifier)) {
-			return false;
-		}
-		if (this.typeName == null) {
-			if (other.typeName != null) {
-				return false;
-			}
-		} else if (!this.typeName.equals(other.typeName)) {
-			return false;
-		}
-		return true;
-	}
-
 }
