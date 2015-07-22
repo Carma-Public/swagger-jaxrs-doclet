@@ -1,17 +1,20 @@
 package com.carma.swagger.doclet.parser;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.carma.swagger.doclet.model.Api;
 import com.carma.swagger.doclet.model.ApiDeclaration;
+import com.carma.swagger.doclet.model.HttpMethod;
 import com.carma.swagger.doclet.model.Model;
 import com.carma.swagger.doclet.model.Operation;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 
 /**
  * The ApiDeclarationMerger represents a util that can merge api declarations together based on the resource path
@@ -43,95 +46,97 @@ public class ApiDeclarationMerger {
 	 * @return A collection of merged API declarations
 	 */
 	public Collection<ApiDeclaration> merge(Collection<ApiDeclaration> declarations) {
+		return mergeApiDeclarations(declarations);
+	}
 
-		Map<String, ApiDeclaration> resourceToApis = new HashMap<String, ApiDeclaration>();
-		for (ApiDeclaration declaration : declarations) {
+	private Collection<ApiDeclaration> mergeApiDeclarations(Collection<ApiDeclaration> apiDeclarations) {
+		List<ApiDeclaration> mergedApiDeclarations = Lists.newArrayList();
+		// Guava ImmutableMultimaps for preserving ordering
+		Multimaps.index(apiDeclarations, a -> a.getResourcePath()).asMap().forEach( (path, apiDecl) -> {
+			mergedApiDeclarations.add(mergeResourceApiDeclarations(path, apiDecl));
+		});
+		return mergedApiDeclarations;
+	}
 
-			String resourcePath = declaration.getResourcePath();
-			ApiDeclaration existing = resourceToApis.get(resourcePath);
+	private ApiDeclaration mergeResourceApiDeclarations(String resourcePath, Collection<ApiDeclaration> apiDeclarations) {
+		String apiVersion = this.apiVersion;
+		String swaggerVersion = this.swaggerVersion;
+		String basePath = this.basePath;
+		int priority = Integer.MAX_VALUE;
+		String description = null;
 
-			// see if we have already added this to the result
-			if (existing == null) {
+		List<Api> apis = Lists.newArrayList();
+		Map<String, Model> models = Maps.newLinkedHashMap();
+		for (ApiDeclaration apiDeclaration : apiDeclarations) {
+			apiVersion = getFirstNonNull(apiVersion, apiDeclaration.getApiVersion());
+			swaggerVersion = getFirstNonNull(swaggerVersion, apiDeclaration.getSwaggerVersion());
+			basePath = getFirstNonNull(this.basePath, apiDeclaration.getBasePath());
+			priority = getFirstNonNullNorVal(Integer.MAX_VALUE, Integer.MAX_VALUE, apiDeclaration.getPriority());
+			description = getFirstNonNull(description, apiDeclaration.getDescription());
 
-				// we haven't so add it
-				String apiVersion = getFirstNonNull(this.apiVersion, declaration.getApiVersion());
-				String swaggerVersion = getFirstNonNull(this.swaggerVersion, declaration.getSwaggerVersion());
-				String basePath = getFirstNonNull(this.basePath, declaration.getBasePath());
-				int priority = getFirstNonNullNorVal(Integer.MAX_VALUE, Integer.MAX_VALUE, declaration.getPriority());
-
-				ApiDeclaration newApi = new ApiDeclaration(swaggerVersion, apiVersion, basePath, resourcePath, declaration.getApis(), declaration.getModels(),
-						priority, declaration.getDescription());
-				resourceToApis.put(resourcePath, newApi);
-
-			} else {
-
-				// we have so we need to merge this api declaration with the existing one
-				String apiVersion = getFirstNonNull(this.apiVersion, existing.getApiVersion(), declaration.getApiVersion());
-				String swaggerVersion = getFirstNonNull(this.swaggerVersion, existing.getSwaggerVersion(), declaration.getSwaggerVersion());
-				String basePath = getFirstNonNull(this.basePath, existing.getBasePath(), declaration.getBasePath());
-				int priority = getFirstNonNullNorVal(Integer.MAX_VALUE, Integer.MAX_VALUE, existing.getPriority(), declaration.getPriority());
-				String description = getFirstNonNull(null, existing.getDescription(), declaration.getDescription());
-
-				List<Api> apis = existing.getApis();
-				if (declaration.getApis() != null && !declaration.getApis().isEmpty()) {
-					if (apis == null) {
-						apis = new ArrayList<Api>(declaration.getApis().size());
-					}
-
-					// build map of existing api path to operations
-					Map<String, Integer> apiPathToIndex = new HashMap<String, Integer>();
-					Map<String, Set<String>> apiPathToOperations = new HashMap<String, Set<String>>();
-					int i = 0;
-					for (Api existingApi : apis) {
-						// store the index
-						apiPathToIndex.put(existingApi.getPath(), i);
-						// store the operations
-						Set<String> operations = new HashSet<String>();
-						for (Operation op : existingApi.getOperations()) {
-							operations.add(op.getMethod().name());
-						}
-						apiPathToOperations.put(existingApi.getPath(), operations);
-					}
-					i++;
-
-					// now merge in the apis, if an api exists with the same path then we merge in the operations that are not already there
-					for (Api apiToMerge : declaration.getApis()) {
-						if (apiPathToIndex.containsKey(apiToMerge.getPath())) {
-							// its already there so only add in operations that are not there already
-							for (Operation op : apiToMerge.getOperations()) {
-								if (!apiPathToOperations.get(apiToMerge.getPath()).contains(op.getMethod().name())) {
-									apis.get(apiPathToIndex.get(apiToMerge.getPath())).getOperations().add(op);
-								}
-							}
-						} else {
-							// not there so add it
-							apis.add(apiToMerge);
-						}
-					}
-
+			apis.addAll(apiDeclaration.getApis());
+			for (Map.Entry<String, Model> modelEntry : apiDeclaration.getModels().entrySet()) {
+				// only add new models
+				if (!models.containsKey(modelEntry.getKey())) {
+					models.put(modelEntry.getKey(), modelEntry.getValue());
 				}
-
-				Map<String, Model> models = existing.getModels();
-				if (declaration.getModels() != null && !declaration.getModels().isEmpty()) {
-					if (models == null) {
-						models = new HashMap<String, Model>(declaration.getModels().size());
-					}
-					// only add new models
-					for (Map.Entry<String, Model> modelEntry : declaration.getModels().entrySet()) {
-						if (!models.containsKey(modelEntry.getKey())) {
-							models.put(modelEntry.getKey(), modelEntry.getValue());
-						}
-					}
-				}
-
-				// replace the existing with the merged one
-				ApiDeclaration merged = new ApiDeclaration(swaggerVersion, apiVersion, basePath, resourcePath, apis, models, priority, description);
-				resourceToApis.put(resourcePath, merged);
 			}
-
 		}
+		List<Api> mergedApis = mergeSameResourceApis(apis);
+		ApiDeclaration newApi = new ApiDeclaration(swaggerVersion, apiVersion, basePath, resourcePath,
+				mergedApis, models, priority, description);
+		return newApi;
+	}
 
-		return resourceToApis.values();
+	private List<Api> mergeSameResourceApis(Collection<Api> apis) {
+		List<Api> mergedApis = Lists.newArrayList();
+		Multimaps.index(apis, a -> a.getPath()).asMap().forEach((path, pathApis) -> {
+			Collection<Operation> operations = pathApis.stream()
+					.map(a -> nullToEmpty(a.getOperations()))
+					.reduce(Lists.newArrayList(), (l, a) -> {l.addAll(a); return l;});
+			operations = mergeSameResourcePathOperations(operations);
+			Api firstApi = pathApis.iterator().next();
+			Api mergedApi = new Api(path, firstApi.getDescription(), operations);
+			mergedApis.add(mergedApi);
+		});
+		return mergedApis;
+	}
+
+	private List<Operation> mergeSameResourcePathOperations(Collection<Operation> operations) {
+		// Merge Operations with same parameters and returntype but differing produces-mimetypes.
+		// It seems Swagger currently does not support methods having multiple differing return types, only different
+		// produces-mimetypes. See https://github.com/swagger-api/swagger-spec/issues/146 or
+		// https://github.com/swagger-api/swagger-core/issues/521 . But doclet can at least support multiple java-methods
+		// (one java-method per mimetype) for one Swagger-Operation.
+		List<Operation> mergedOperations = Lists.newArrayList();
+		Multimaps.index(operations, o -> operationSignature(o)).asMap().forEach((signature, signatureOps) -> {
+			Operation firstOp = signatureOps.iterator().next();
+			Collection<String> consumes = signatureOps.stream()
+					.map(o -> nullToEmpty(o.getConsumes()))
+					.reduce(Sets.newLinkedHashSet(), (s, c) -> {s.addAll(c); return s;});
+			Collection<String> produces = signatureOps.stream()
+					.map(o -> nullToEmpty(o.getProduces()))
+					.reduce(Sets.newLinkedHashSet(), (s, c) -> {s.addAll(c); return s;});
+			Operation mergedOperation = firstOp.consumes(consumes).produces(produces);
+			mergedOperations.add(mergedOperation);
+		});
+		return mergedOperations;
+	}
+
+	private static String operationSignature(Operation o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(o.getType()).append(" ");
+		sb.append(o.getMethod()).append(" (");
+		Joiner.on(",").appendTo(sb, nullToEmpty(o.getParameters()).stream().map((p) -> p.getType() + " " + p.getName()).iterator());
+		sb.append(")");
+		// JAX-RS cannot dispatch multiple resource-methods under same path and with same mimetype, but the unittest dont comply
+		if (o.getMethod() == HttpMethod.GET && nullToEmpty(o.getProduces()).isEmpty()) {
+			sb.append(" producesWorkaround_").append(o.getNickname());
+		}
+		if (o.getMethod() == HttpMethod.POST && nullToEmpty(o.getConsumes()).isEmpty()) {
+			sb.append(" consumesWorkaround_").append(o.getNickname());
+		}
+		return sb.toString();
 	}
 
 	private <T> T getFirstNonNull(T defaultValue, T... vals) {
@@ -152,4 +157,7 @@ public class ApiDeclarationMerger {
 		return defaultValue;
 	}
 
+	private static <T> Collection<T> nullToEmpty(Collection<T> c) {
+		return c != null ? c : Collections.emptyList();
+	}
 }
