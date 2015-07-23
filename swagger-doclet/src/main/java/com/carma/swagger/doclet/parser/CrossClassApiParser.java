@@ -1,6 +1,5 @@
 package com.carma.swagger.doclet.parser;
 
-import static com.carma.swagger.doclet.parser.ParserHelper.parsePath;
 import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.collect.Maps.uniqueIndex;
@@ -64,7 +63,7 @@ public class CrossClassApiParser {
 		this.classes = classes;
 		this.typeClasses = typeClasses;
 		this.subResourceClasses = subResourceClasses;
-		this.rootPath = firstNonNull(parsePath(classDoc, options), "");
+		this.rootPath = firstNonNull(ParserHelper.parsePathRecursive(classDoc, options), "");
 		this.swaggerVersion = swaggerVersion;
 		this.apiVersion = apiVersion;
 		this.basePath = basePath;
@@ -92,7 +91,7 @@ public class CrossClassApiParser {
 		this.classes = classes;
 		this.typeClasses = typeClasses;
 		this.subResourceClasses = subResourceClasses;
-		this.rootPath = parentResourcePath + firstNonNull(parsePath(classDoc, options), "");
+		this.rootPath = parentResourcePath + firstNonNull(ParserHelper.parsePathRecursive(classDoc, options), "");
 		this.swaggerVersion = swaggerVersion;
 		this.apiVersion = apiVersion;
 		this.basePath = basePath;
@@ -138,9 +137,9 @@ public class CrossClassApiParser {
 				// skip
 			} else {
 				for (MethodDoc method : currentClassDoc.methods()) {
-					ApiMethodParser methodParser = this.parentMethod == null ? new ApiMethodParser(this.options, this.rootPath, method, this.classes,
-							this.typeClasses, defaultErrorTypeClass) : new ApiMethodParser(this.options, this.parentMethod, method, this.classes,
-							this.typeClasses, defaultErrorTypeClass);
+					ApiMethodParser methodParser = this.parentMethod == null ?
+							new ApiMethodParser(this.options, this.rootPath, method, this.classes, this.typeClasses, defaultErrorTypeClass)
+					      : new ApiMethodParser(this.options, this.parentMethod, method, this.classes, this.typeClasses, defaultErrorTypeClass);
 
 					Method parsedMethod = methodParser.parse();
 					if (parsedMethod == null) {
