@@ -139,20 +139,16 @@ public class ApiDeclarationMerger {
 		return sb.toString();
 	}
 
-	private <T> T getFirstNonNull(T defaultValue, T... vals) {
-		for (T val : vals) {
-			if (val != null) {
-				return val;
-			}
+	private static <T> T getFirstNonNull(T defaultValue, T val) {
+		if (val != null) {
+			return val;
 		}
 		return defaultValue;
 	}
 
-	private <T> T getFirstNonNullNorVal(T defaultValue, T excludeVal, T... vals) {
-		for (T val : vals) {
-			if (val != null && !val.equals(excludeVal)) {
-				return val;
-			}
+	private static <T> T getFirstNonNullNorVal(T defaultValue, T excludeVal, T val) {
+		if (val != null && !val.equals(excludeVal)) {
+			return val;
 		}
 		return defaultValue;
 	}
