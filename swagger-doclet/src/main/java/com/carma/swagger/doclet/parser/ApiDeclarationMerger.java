@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.carma.swagger.doclet.model.Api;
 import com.carma.swagger.doclet.model.ApiDeclaration;
@@ -91,9 +92,9 @@ public class ApiDeclarationMerger {
 	private List<Api> mergeSameResourceApis(Collection<Api> apis) {
 		List<Api> mergedApis = Lists.newArrayList();
 		Multimaps.index(apis, a -> a.getPath()).asMap().forEach((path, pathApis) -> {
-			Collection<Operation> operations = pathApis.stream()
-					.map(a -> nullToEmpty(a.getOperations()))
-					.reduce(Lists.newArrayList(), (l, a) -> {l.addAll(a); return l;});
+			List<Operation> operations = pathApis.stream()
+					.flatMap(a -> nullToEmpty(a.getOperations()).stream())
+					.collect(Collectors.toList());
 			operations = mergeSameResourcePathOperations(operations);
 			Api firstApi = pathApis.iterator().next();
 			Api mergedApi = new Api(path, firstApi.getDescription(), operations);
@@ -111,12 +112,14 @@ public class ApiDeclarationMerger {
 		List<Operation> mergedOperations = Lists.newArrayList();
 		Multimaps.index(operations, o -> operationSignature(o)).asMap().forEach((signature, signatureOps) -> {
 			Operation firstOp = signatureOps.iterator().next();
-			Collection<String> consumes = signatureOps.stream()
-					.map(o -> nullToEmpty(o.getConsumes()))
-					.reduce(Sets.newLinkedHashSet(), (s, c) -> {s.addAll(c); return s;});
+			List<String> consumes = signatureOps.stream()
+					.flatMap(o -> nullToEmpty(o.getConsumes()).stream())
+					.distinct()
+					.collect(Collectors.toList());
 			Collection<String> produces = signatureOps.stream()
-					.map(o -> nullToEmpty(o.getProduces()))
-					.reduce(Sets.newLinkedHashSet(), (s, c) -> {s.addAll(c); return s;});
+					.flatMap(o -> nullToEmpty(o.getProduces()).stream())
+					.distinct()
+					.collect(Collectors.toList());
 			Operation mergedOperation = firstOp.consumes(consumes).produces(produces);
 			mergedOperations.add(mergedOperation);
 		});
