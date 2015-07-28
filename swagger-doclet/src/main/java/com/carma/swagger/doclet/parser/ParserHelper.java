@@ -214,6 +214,25 @@ public class ParserHelper {
 	}
 
 	/**
+	 * Parses the path from the annotations of a class or recursively the superclasses
+	 *
+	 * @param classDoc The class
+	 * @param options The doclet options
+	 * @return The path or null if no path related annotations were present
+	 */
+	public static String parsePathRecursive(ClassDoc classDoc, DocletOptions options) {
+		ClassDoc doc = classDoc;
+		do {
+			String path = parsePath(doc, options);
+			if (path != null) {
+				return path;
+			}
+			doc = doc.superclass();
+		} while (hasAncestor(doc));
+		return null;
+	}
+
+	/**
 	 * This verifies that the given numeric values are valid for the given data type and format and returns the comparison.
 	 * If not valid it raises an exception. It ignores null/empty values.
 	 * @param context Additional description for contextualizing the error message
