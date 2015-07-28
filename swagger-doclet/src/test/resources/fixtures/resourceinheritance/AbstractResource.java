@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
  * The AbstractResource represents a base resource class
  */
 @SuppressWarnings("javadoc")
+@Path("/foo")
 public abstract class AbstractResource {
 
 	@GET
