@@ -75,7 +75,7 @@ public class ApiDeclarationMerger {
 			description = description != null ? description : apiDeclaration.getDescription();
 
 			apis.addAll(apiDeclaration.getApis());
-			for (Map.Entry<String, Model> modelEntry : apiDeclaration.getModels().entrySet()) {
+			for (Map.Entry<String, Model> modelEntry : nullToEmpty(apiDeclaration.getModels()).entrySet()) {
 				// only add new models
 				if (!models.containsKey(modelEntry.getKey())) {
 					models.put(modelEntry.getKey(), modelEntry.getValue());
@@ -146,5 +146,9 @@ public class ApiDeclarationMerger {
 
 	private static <T> Collection<T> nullToEmpty(Collection<T> c) {
 		return c != null ? c : Collections.emptyList();
+	}
+
+	private static <K,V> Map<K,V> nullToEmpty(Map<K,V> v) {
+		return v != null ? v : Collections.emptyMap();
 	}
 }
