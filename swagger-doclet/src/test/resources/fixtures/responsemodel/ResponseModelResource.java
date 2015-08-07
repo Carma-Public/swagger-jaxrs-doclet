@@ -16,12 +16,14 @@ public class ResponseModelResource {
 
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("unspecified")
 	public Response unspecifiedResponse() {
 		return Response.ok().build();
 	}
 
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("definedViaReturn")
 	public Response1 responseDefinedViaReturn() {
 		return new Response1();
 	}
@@ -31,6 +33,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("definedViaTag")
 	public Response responseDefinedViaTag() {
 		return Response.ok().entity(new Response2()).build();
 	}
@@ -40,6 +43,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("definedViaTagForList")
 	public Response responseDefinedViaTagForList() {
 		return Response.ok().entity(new ArrayList<Response2>()).build();
 	}
@@ -49,6 +53,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("definedViaTagForPrimitiveList")
 	public Response responseDefinedViaTagForPrimitiveList() {
 		return Response.ok().entity(new ArrayList<String>()).build();
 	}
@@ -58,6 +63,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("string")
 	public Response responseString() {
 		return Response.ok().build();
 	}
@@ -67,6 +73,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("stringObject")
 	public Response responseStringObject() {
 		return Response.ok().build();
 	}
@@ -76,6 +83,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("int")
 	public Response responseInt() {
 		return Response.ok().build();
 	}
@@ -85,6 +93,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("intObject")
 	public Response responseIntObject() {
 		return Response.ok().build();
 	}
@@ -94,6 +103,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("bigIntObject")
 	public Response responseBigIntObject() {
 		return Response.ok().build();
 	}
@@ -103,6 +113,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("bigDecObject")
 	public Response responseBigDecObject() {
 		return Response.ok().build();
 	}
@@ -114,6 +125,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("viaResponseCode")
 	public Response responseDefinedViaResponseCode() {
 		return Response.ok().entity(new Response2()).build();
 	}
@@ -124,12 +136,14 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("mix")
 	public Response responseMix() {
 		return Response.ok().entity(new Response3()).build();
 	}
 
 	@GET
 	@SuppressWarnings("javadoc")
+	@Path("interface")
 	public Response4 interfaceResponse() {
 		return new Response4() {
 
@@ -145,6 +159,7 @@ public class ResponseModelResource {
 	 */
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("interfaceViaTag")
 	public Response interfaceResponseViaTag() {
 		return Response.ok().entity(new Response4() {
 

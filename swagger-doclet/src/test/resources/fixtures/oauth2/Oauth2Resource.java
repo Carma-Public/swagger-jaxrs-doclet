@@ -15,6 +15,7 @@ public class Oauth2Resource {
 	 * @scope write:pets
 	 */
 	@GET
+	@Path("/customScope")
 	public void customScope() {
 		// do nothing
 	}
@@ -24,12 +25,14 @@ public class Oauth2Resource {
 	 * @scope read:pets
 	 */
 	@GET
+	@Path("/customScopes")
 	public void customScopes() {
 		// do nothing
 	}
 
 	@SuppressWarnings("javadoc")
 	@GET
+	@Path("/defaultNoAuth")
 	public void defaultNoAuth() {
 		// this method should have no auth applied
 	}
@@ -38,6 +41,7 @@ public class Oauth2Resource {
 	 * @authentication Required
 	 */
 	@GET
+	@Path("/defaultAuth")
 	public void defaultAuth() {
 		// this method should have default scope auth applied
 	}
@@ -46,6 +50,7 @@ public class Oauth2Resource {
 	 * @authentication Not required
 	 */
 	@GET
+	@Path("/noAuth1")
 	public void noAuth1() {
 		// this does not need authentication
 	}
@@ -54,6 +59,7 @@ public class Oauth2Resource {
 	 * @noAuth
 	 */
 	@GET
+	@Path("/noAuth2")
 	public void noAuth2() {
 		// this does not need authentication
 	}

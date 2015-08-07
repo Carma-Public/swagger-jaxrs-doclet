@@ -132,13 +132,6 @@ public class ApiDeclarationMerger {
 		sb.append(o.getMethod()).append(" (");
 		Joiner.on(",").appendTo(sb, nullToEmpty(o.getParameters()).stream().map((p) -> p.getType() + " " + p.getName()).iterator());
 		sb.append(")");
-		// JAX-RS cannot dispatch multiple resource-methods under same path and with same mimetype, but the unittest dont comply
-		if (o.getMethod() == HttpMethod.GET && nullToEmpty(o.getProduces()).isEmpty()) {
-			sb.append(" producesWorkaround_").append(o.getNickname());
-		}
-		if (o.getMethod() == HttpMethod.POST && nullToEmpty(o.getConsumes()).isEmpty()) {
-			sb.append(" consumesWorkaround_").append(o.getNickname());
-		}
 		return sb.toString();
 	}
 

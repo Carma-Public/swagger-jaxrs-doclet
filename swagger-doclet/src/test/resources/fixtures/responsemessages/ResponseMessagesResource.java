@@ -16,6 +16,7 @@ public class ResponseMessagesResource {
 	 * @errorResponse 404 not found
 	 */
 	@GET
+	@Path("swagger11")
 	public void swagger11() {
 		// noop
 	}
@@ -25,6 +26,7 @@ public class ResponseMessagesResource {
 	 * @responseMessage 404 not found `fixtures.responsemessages.Response1
 	 */
 	@GET
+	@Path("swagger12")
 	public void swagger12() {
 		// noop
 	}
@@ -37,6 +39,7 @@ public class ResponseMessagesResource {
 	 * @errorCode 401|not_authC|If user not authenticated `fixtures.responsemessages.Response1
 	 */
 	@GET
+	@Path("carma")
 	public void carma() {
 		// noop
 	}
