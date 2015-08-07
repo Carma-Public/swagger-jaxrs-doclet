@@ -8,14 +8,12 @@ import java.util.stream.Collectors;
 
 import com.carma.swagger.doclet.model.Api;
 import com.carma.swagger.doclet.model.ApiDeclaration;
-import com.carma.swagger.doclet.model.HttpMethod;
 import com.carma.swagger.doclet.model.Model;
 import com.carma.swagger.doclet.model.Operation;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
 
 /**
  * The ApiDeclarationMerger represents a util that can merge api declarations together based on the resource path
@@ -60,20 +58,21 @@ public class ApiDeclarationMerger {
 	}
 
 	private ApiDeclaration mergeResourceApiDeclarations(String resourcePath, Collection<ApiDeclaration> apiDeclarations) {
-		String apiVersion = this.apiVersion;
-		String swaggerVersion = this.swaggerVersion;
-		String basePath = this.basePath;
+		String apiVersion = null;
+		String swaggerVersion = null;
+		String basePath = null;
 		int priority = Integer.MAX_VALUE;
 		String description = null;
 
 		List<Api> apis = Lists.newArrayList();
 		Map<String, Model> models = Maps.newLinkedHashMap();
 		for (ApiDeclaration apiDeclaration : apiDeclarations) {
-			apiVersion = getFirstNonNull(apiVersion, apiDeclaration.getApiVersion());
-			swaggerVersion = getFirstNonNull(swaggerVersion, apiDeclaration.getSwaggerVersion());
-			basePath = getFirstNonNull(this.basePath, apiDeclaration.getBasePath());
-			priority = getFirstNonNullNorVal(Integer.MAX_VALUE, Integer.MAX_VALUE, apiDeclaration.getPriority());
-			description = getFirstNonNull(description, apiDeclaration.getDescription());
+			// use the first valid value else the the configured defaults
+			apiVersion = firstNonNull(apiVersion, apiDeclaration.getApiVersion(), this.apiVersion);
+			swaggerVersion = firstNonNull(swaggerVersion, apiDeclaration.getSwaggerVersion(), this.swaggerVersion);
+			basePath = firstNonNull(basePath, apiDeclaration.getBasePath(), this.basePath);
+			priority = priority != Integer.MAX_VALUE ? priority : apiDeclaration.getPriority();
+			description = description != null ? description : apiDeclaration.getDescription();
 
 			apis.addAll(apiDeclaration.getApis());
 			for (Map.Entry<String, Model> modelEntry : apiDeclaration.getModels().entrySet()) {
@@ -135,18 +134,14 @@ public class ApiDeclarationMerger {
 		return sb.toString();
 	}
 
-	private static <T> T getFirstNonNull(T defaultValue, T val) {
-		if (val != null) {
-			return val;
+	private static <T> T firstNonNull(T val1, T val2, T val3) {
+		if (val1 != null) {
+			return val1;
 		}
-		return defaultValue;
-	}
-
-	private static <T> T getFirstNonNullNorVal(T defaultValue, T excludeVal, T val) {
-		if (val != null && !val.equals(excludeVal)) {
-			return val;
+		if (val2 != null) {
+			return val2;
 		}
-		return defaultValue;
+		return val3;
 	}
 
 	private static <T> Collection<T> nullToEmpty(Collection<T> c) {
