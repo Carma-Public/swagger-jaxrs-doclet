@@ -5,7 +5,7 @@
     "resourcePath": "/oauth2",
     "apis": [
         {
-            "path": "/oauth2",
+            "path": "/oauth2/customScope",
             "operations": [
                 {
                     "method": "GET",
@@ -19,7 +19,12 @@
 					        }
 					    ]
 					}
-                },
+                }
+            ]
+        },
+        {
+            "path": "/oauth2/customScopes",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "customScopes",
@@ -36,12 +41,12 @@
 					        }
 					    ]
 					}
-                },
-                {
-                    "method": "GET",
-                    "nickname": "defaultNoAuth",
-                    "type": "void"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/oauth2/defaultAuth",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "defaultAuth",
@@ -54,13 +59,33 @@
 					        }
 					    ]
 					}
-                },
+                }
+            ]
+        },
+        {
+            "path": "/oauth2/defaultNoAuth",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "defaultNoAuth",
+                    "type": "void"
+                }
+            ]
+        },
+        {
+            "path": "/oauth2/noAuth1",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "noAuth1",
                     "type": "void",
                     "authorizations": {}
-                },
+                }
+            ]
+        },
+        {
+            "path": "/oauth2/noAuth2",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "noAuth2",

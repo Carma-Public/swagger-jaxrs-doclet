@@ -5,36 +5,8 @@
     "resourcePath": "/responsemessages",
     "apis": [
         {
-            "path": "/responsemessages",
+            "path": "/responsemessages/carma",
             "operations": [
-                {
-                    "method": "GET",
-                    "nickname": "swagger11",
-                    "type": "void",
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "not found",
-                            "responseModel" : "Response2"
-                        }
-                    ]
-                },
-                {
-                    "method": "GET",
-                    "nickname": "swagger12",
-                    "type": "void",
-                    "responseMessages": [
-                        {
-                            "code": 200,
-                            "message": "ok"
-                        },
-                        {
-                            "code": 404,
-                            "message": "not found",
-                            "responseModel" : "Response1"
-                        }
-                    ]
-                },
                 {
                     "method": "GET",
                     "nickname": "carma",
@@ -48,6 +20,44 @@
                             "code": 401,
                             "message": "not authA<br>not authB<br>not_authC|If user not authenticated",
                             "responseModel" : "Response3"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/responsemessages/swagger11",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "swagger11",
+                    "type": "void",
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "not found",
+                            "responseModel" : "Response2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/responsemessages/swagger12",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "swagger12",
+                    "type": "void",
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "ok"
+                        },
+                        {
+                            "code": 404,
+                            "message": "not found",
+                            "responseModel" : "Response1"
                         }
                     ]
                 }

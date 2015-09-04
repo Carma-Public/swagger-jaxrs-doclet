@@ -1,0 +1,15 @@
+{
+  "apiVersion" : "0",
+  "swaggerVersion" : "1.2",
+  "basePath" : "http://localhost:8080",
+  "resourcePath" : "/producesmethods",
+  "apis" : [ {
+    "path" : "/producesmethods",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "getDataJson",
+      "type" : "string",
+      "produces" : [ "application/json", "application/xml" ]
+    } ]
+  } ]
+}

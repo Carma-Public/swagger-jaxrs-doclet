@@ -5,23 +5,50 @@
     "resourcePath": "/responsemodel",
     "apis": [
         {
-            "path": "/responsemodel",
+            "path": "/responsemodel/bigDecObject",
             "operations": [
                 {
                     "method": "GET",
-                    "nickname": "unspecifiedResponse",
-                    "type": "Response"
-                },
+                    "nickname": "responseBigDecObject",
+                    "type": "number",
+                    "format" : "double"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/bigIntObject",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "responseBigIntObject",
+                    "type": "integer",
+                    "format" : "int64"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/definedViaReturn",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseDefinedViaReturn",
                     "type": "Response1"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/definedViaTag",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseDefinedViaTag",
                     "type": "Response2"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/definedViaTagForList",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseDefinedViaTagForList",
@@ -29,7 +56,12 @@
                     "items": {
                     	"$ref": "Response2"
                     }
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/definedViaTagForPrimitiveList",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseDefinedViaTagForPrimitiveList",
@@ -37,41 +69,101 @@
                     "items": {
                     	"type": "string"
                     }
-                },
-                {
-                    "method": "GET",
-                    "nickname": "responseString",
-                    "type": "string"
-                },
-                {
-                    "method": "GET",
-                    "nickname": "responseStringObject",
-                    "type": "string"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/int",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseInt",
                     "type": "integer",
                     "format" : "int32"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/intObject",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseIntObject",
                     "type": "integer",
                     "format" : "int32"
-                },
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/interface",
+            "operations": [
                 {
                     "method": "GET",
-                    "nickname": "responseBigIntObject",
-                    "type": "integer",
-                    "format" : "int64"
-                },
+                    "nickname": "interfaceResponse",
+                    "type": "Response4"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/interfaceViaTag",
+            "operations": [
                 {
                     "method": "GET",
-                    "nickname": "responseBigDecObject",
-                    "type": "number",
-                    "format" : "double"
-                },
+                    "nickname": "interfaceResponseViaTag",
+                    "type": "Response4"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/mix",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "responseMix",
+                    "type": "Response2",
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "if no result found",
+                            "responseModel" : "Response3"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/string",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "responseString",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/stringObject",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "responseStringObject",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/unspecified",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "unspecifiedResponse",
+                    "type": "Response"
+                }
+            ]
+        },
+        {
+            "path": "/responsemodel/viaResponseCode",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "responseDefinedViaResponseCode",
@@ -92,28 +184,6 @@
                             "message": "if an internal error occurred"
                         }
                     ]
-                },
-                {
-                    "method": "GET",
-                    "nickname": "responseMix",
-                    "type": "Response2",
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "if no result found",
-                            "responseModel" : "Response3"
-                        }
-                    ]
-                },
-                {
-                    "method": "GET",
-                    "nickname": "interfaceResponse",
-                    "type": "Response4"
-                },
-                {
-                    "method": "GET",
-                    "nickname": "interfaceResponseViaTag",
-                    "type": "Response4"
                 }
             ]
         }

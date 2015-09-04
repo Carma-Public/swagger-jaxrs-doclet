@@ -5,18 +5,48 @@
     "resourcePath": "/genericresponse",
     "apis": [
         {
-            "path": "/genericresponse",
+            "path": "/genericresponse/batch",
             "operations": [
                 {
                     "method": "GET",
-                    "nickname": "getParameterized",
-                    "type": "Parameterized"
-                },
+                    "nickname": "getBatch",
+                    "type": "Batch"
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/batch2",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "getBatch2",
+                    "type": "Batch"
+                }
+            ]
+        },
+        {
+            "path": "/genericresponse/intmap",
+            "operations": [
+                {
+                    "method": "GET",
+                    "nickname": "getIntMap",
+                    "type": "Map"
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/jresponse",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "getJResponse",
                     "type": "string"
-                },
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/optional",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "getOptional",
@@ -28,7 +58,12 @@
                             "type": "string"
                         }
                     ]
-                },
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/optional2",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "getOptional2",
@@ -41,28 +76,28 @@
                             "format" : "int32"
                         }
                     ]
-                },
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/parameterized",
+            "operations": [
                 {
                     "method": "GET",
-                    "nickname": "getIntMap",
-                    "type": "Map"
-                },
+                    "nickname": "getParameterized",
+                    "type": "Parameterized"
+                }
+             ]
+        },
+        {
+            "path": "/genericresponse/parameterized2",
+            "operations": [
                 {
                     "method": "GET",
                     "nickname": "getParameterized2",
                     "type": "Parameterized2"
-                },
-                {
-                    "method": "GET",
-                    "nickname": "getBatch",
-                    "type": "Batch"
-                },
-                {
-                    "method": "GET",
-                    "nickname": "getBatch2",
-                    "type": "Batch"
                 }
-            ]
+             ]
         }
     ]
     ,

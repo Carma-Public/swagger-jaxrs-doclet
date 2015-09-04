@@ -2,7 +2,10 @@ package com.carma.swagger.doclet.model;
 
 import static com.google.common.base.Strings.emptyToNull;
 
+import java.util.Collection;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 public class Operation {
 
@@ -29,6 +32,22 @@ public class Operation {
 	private Operation() {
 	}
 
+	private Operation(Operation o) {
+		this.method = o.method;
+		this.nickname = o.nickname;
+		this.type = o.type;
+		this.format = o.format;
+		this.items = o.items;
+		this.parameters = o.parameters;
+		this.responseMessages = o.responseMessages;
+		this.summary = o.summary;
+		this.notes = o.notes;
+		this.consumes = o.consumes;
+		this.produces = o.produces;
+		this.authorizations = o.authorizations;
+		this.deprecated = o.deprecated;
+	}
+
 	public Operation(Method method) {
 		this.method = method.getMethod();
 		this.nickname = emptyToNull(method.getMethodName());
@@ -37,18 +56,17 @@ public class Operation {
 		if (method.getReturnTypeItemsRef() != null || method.getReturnTypeItemsType() != null) {
 			this.items = new PropertyItems(method.getReturnTypeItemsRef(), method.getReturnTypeItemsType(), method.getReturnTypeItemsFormat(), method.getReturnTypeItemsAllowableValues());
 		}
-		this.parameters = method.getParameters().isEmpty() ? null : method.getParameters();
-		this.responseMessages = method.getResponseMessages().isEmpty() ? null : method.getResponseMessages();
+		this.parameters = method.getParameters().isEmpty() ? null : ImmutableList.copyOf(method.getParameters());
+		this.responseMessages = method.getResponseMessages().isEmpty() ? null : ImmutableList.copyOf(method.getResponseMessages());
 		this.summary = emptyToNull(method.getSummary());
 		this.notes = emptyToNull(method.getNotes());
-		this.consumes = method.getConsumes() == null || method.getConsumes().isEmpty() ? null : method.getConsumes();
-		this.produces = method.getProduces() == null || method.getProduces().isEmpty() ? null : method.getProduces();
+		this.consumes = method.getConsumes() == null || method.getConsumes().isEmpty() ? null : ImmutableList.copyOf(method.getConsumes());
+		this.produces = method.getProduces() == null || method.getProduces().isEmpty() ? null : ImmutableList.copyOf(method.getProduces());
 		this.authorizations = method.getAuthorizations();
 
 		if (method.isDeprecated()) {
 			this.deprecated = "true";
 		}
-
 	}
 
 	public HttpMethod getMethod() {
@@ -104,11 +122,35 @@ public class Operation {
 	}
 
 	/**
+	 * Returns a new Operation with the given consumes. This object itself will not be changed.
+	 * @param consumes
+	 *            consumes to set
+	 * @return new Operations
+	 */
+	public Operation consumes(Collection<String> consumes) {
+		Operation clone = new Operation(this);
+		clone.consumes = consumes == null || consumes.isEmpty() ? null : ImmutableList.copyOf(consumes);
+		return clone;
+	}
+
+	/**
 	 * This gets the produces
 	 * @return the produces
 	 */
 	public List<String> getProduces() {
 		return this.produces;
+	}
+
+	/**
+	 * Returns a new Operation with the given produces. This object itself will not be changed.
+	 * @param produces
+	 *            produces to set
+	 * @return new Operations
+	 */
+	public Operation produces(Collection<String> produces) {
+		Operation clone = new Operation(this);
+		clone.produces = produces == null || produces.isEmpty() ? null : ImmutableList.copyOf(produces);
+		return clone;
 	}
 
 	/**
