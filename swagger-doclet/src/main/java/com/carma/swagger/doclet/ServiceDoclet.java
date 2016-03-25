@@ -204,6 +204,7 @@ public class ServiceDoclet {
 		options.put("-disableDeprecatedOperationExclusion", 1);
 		options.put("-disableDeprecatedFieldExclusion", 1);
 		options.put("-disableDeprecatedParamExclusion", 1);
+		options.put("-customDeprecatedAnnotation", 2);
 
 		// sort options
 		options.put("-sortResourcesByPath", 1);

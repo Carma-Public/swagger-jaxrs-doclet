@@ -1794,6 +1794,14 @@ public class ParserHelper {
 	}
 
 	/**
+	 * this adds custom annotations to the list of Deprecated annotations
+	 * @param customDeprecatedAnnotations The string list of fully qualified annotations to be added as deprecated
+     */
+	public static void addCustomDeprecatedAnnotation(List<String> customDeprecatedAnnotations) {
+		DEPRECATED_ANNOTATIONS.addAll(customDeprecatedAnnotations);
+	}
+
+    /**
 	 * This gets whether the given method or an overridden method has any of the given annotations
 	 * @param methodDoc The method doc to check
 	 * @param annotations the annotations to check

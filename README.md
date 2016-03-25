@@ -679,6 +679,8 @@ Then the variable ${userFieldNamesDesc} would be replaced by the value from the 
 	<tr><td>-disableDeprecatedFieldExclusion</td><td>By default model fields which have either the @deprecated tag or @Deprecated annotation (either on the model field or method) are excluded from the generated documentation. If this flag is set they will be included.</td></tr>
 	
 	<tr><td>-disableDeprecatedParamExclusion</td><td>By default operation parameters which have the @Deprecated annotation are excluded from the generated documentation. If this flag is set they will be included.</td></tr>
+
+	<tr><td>-customDeprecatedAnnotation</td><td>Allows for custom annotations which represent deprecated annotation</td></tr>
 	
 	<tr><td>-excludeModelPrefixes</td><td>This adds additional classes to the set of model classes that are NOT documented. The default set contains org.joda.time.DateTime, java.util.UUID, java.io. . This supports a full class name as well as prefixes of the fully qualified class names which means you can enter a package like com.foo to exclude all classes under the com.foo package. This replaces the -typesToTreatAsOpaque option but if that option is specified then those classes will be added to the excludeModelPrefixes set.</td></tr>
 	
