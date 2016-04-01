@@ -6,6 +6,8 @@ This is a JavaDoc Doclet that can be used to generate a JSON Swagger resource li
 
 This was originally forked from [Ryan Kennedy's original doclet](https://github.com/ryankennedy/swagger-jaxrs-doclet) to add support for swagger 1.2 and has moved on considerably from it.
 
+**This fork is no longer actively maintained. Please switch to https://github.com/conorroche/swagger-doclet.**
+
 This is used as a basis for the [Carma API Reference](https://api-dev.car.ma/apidoc/ref/index.html) which is a good working example of the Swagger UI being used for a large API.
 
 #####Note you can win [$1,000,000](http://carmacarpool.com/prize) using the Carma API! 
