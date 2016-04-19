@@ -46,7 +46,7 @@ public class ApiMethodParser {
 	private static final Pattern GENERIC_RESPONSE_PATTERN = Pattern.compile("(.*)<(.*)>");
 
 	// pattern that can match a code, a description and an optional response model type
-	private static final Pattern[] RESPONSE_MESSAGE_PATTERNS = new Pattern[] { Pattern.compile("(\\d+)([^`]+)(`.*)?") };
+	private static final Pattern[] RESPONSE_MESSAGE_PATTERNS = new Pattern[] { Pattern.compile("(\\d+)([^\\d`]+)(`.*)?") };
 
 	private Method parentMethod;
 	private String parentPath;
